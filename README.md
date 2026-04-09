@@ -24,6 +24,16 @@ Le code est structuré de manière modulaire avec plusieurs classes :
 - `Blob` : représente les cellules du joueur, leur déplacement et leur dessin
 - `Nourriture` : représente les éléments comestibles présents sur le terrain
 
+
+## Prompts principaux
+- **Initialisation du canvas** : Utilisation de `createCanvas()` pour définir la zone de jeu.
+- **Gestion des entrées** : Déplacement du blob avec la souris via `mouseX` et `mouseY`.
+- **Division du blob** : Activation par la touche `Espace` avec `keyPressed()`.
+- **Collisions et interactions** : Détection des collisions entre blobs et nourriture avec `dist()`.
+- **Fusion automatique** : Réunion des fragments après un délai avec `millis()`.
+
+**Note** : J'ai modifié les noms des variables et des fonctions en anglais à la main pour pouvoir mieux me repérer dans mon code.
+
 ## Utilisation
 1. Ouvrir `agar.io/index.html` dans un navigateur.
 2. Déplacer la souris pour contrôler le blob.
