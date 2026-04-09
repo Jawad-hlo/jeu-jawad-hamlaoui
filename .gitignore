@@ -1,0 +1,6 @@
+# Ignorer les fichiers temporaires Windows
+Thumbs.db
+.DS_Store
+
+# Éventuels fichiers de configuration locale
+.vscode/
