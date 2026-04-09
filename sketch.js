@@ -115,11 +115,16 @@ class Jeu {
     this.splitY = 0;
     this.splitStart = 0;
     this.splitDuration = 400;
+    this.tempsDepart = 0;
+    this.dureePartie = 30000; // 30 secondes en millisecondes
+    this.partieTerminee = false;
   }
 
   initialiser() {
     this.blobs = [new Blob(width / 2, height / 2, 20)];
     this.nourriture = Array.from({ length: 50 }, () => this.creerNourriture());
+    this.tempsDepart = millis();
+    this.partieTerminee = false;
   }
 
   creerNourriture() {
@@ -127,6 +132,15 @@ class Jeu {
   }
 
   update() {
+    if (this.partieTerminee) return;
+    
+    // Vérifier si le temps est écoulé
+    const tempsEcoule = millis() - this.tempsDepart;
+    if (tempsEcoule >= this.dureePartie) {
+      this.partieTerminee = true;
+      return;
+    }
+    
     this.blobs.forEach(blob => blob.mettreAJour());
     if (this.estDivise && millis() - this.tempsDivision > 15000) {
       this.fusionner();
@@ -140,9 +154,59 @@ class Jeu {
     this.blobs.forEach(blob => blob.dessiner());
     this.nourriture.forEach(food => food.dessiner());
     this.dessinerEffetSplit();
+    
+    // Afficher le timer
+    this.dessinerTimer();
+    
+    // Afficher l'écran de fin si la partie est terminée
+    if (this.partieTerminee) {
+      this.dessinerFinPartie();
+    }
+    
     fill(255);
     noStroke();
-    text("Agar.io Clone - D�placez la souris, Espace pour diviser", 10, 20);
+    textSize(14);
+    text("Agar.io Clone - Déplacez la souris, Espace pour diviser", 10, 20);
+  }
+
+  dessinerTimer() {
+    const tempsEcoule = millis() - this.tempsDepart;
+    const tempsRestant = max(0, this.dureePartie - tempsEcoule);
+    const secondes = floor(tempsRestant / 1000);
+    const millisecondes = tempsRestant % 1000;
+    
+    fill(255);
+    noStroke();
+    textSize(32);
+    textAlign(CENTER);
+    text(`Temps: ${secondes}s`, width / 2, 40);
+    textAlign(LEFT);
+  }
+
+  dessinerFinPartie() {
+    // Fond semi-transparent
+    fill(0, 0, 0, 200);
+    rect(0, 0, width, height);
+    
+    // Calcule la taille totale du blob
+    let tailleTotale = 0;
+    this.blobs.forEach(blob => {
+      tailleTotale += blob.taille;
+    });
+    
+    // Affiche l'écran de fin
+    fill(255);
+    noStroke();
+    textSize(48);
+    textAlign(CENTER);
+    text("GAME OVER", width / 2, height / 2 - 100);
+    
+    textSize(32);
+    text(`Score Final: ${floor(tailleTotale)}`, width / 2, height / 2);
+    
+    textSize(20);
+    fill(150, 255, 150);
+    text("Appuie sur R pour rejouer", width / 2, height / 2 + 80);
   }
 
   verifierCollisions() {
@@ -243,6 +307,9 @@ function draw() {
 function keyPressed() {
   if (key === ' ') {
     jeu.diviser();
+  }
+  if (key === 'r' || key === 'R') {
+    jeu.initialiser();
   }
 }
 
